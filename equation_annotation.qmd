@@ -102,6 +102,18 @@ A &= \int B \label{eq-11} \\
 - HTML + JS + CSS for `bottom` styling of equation annotation
 - HTML + JS + CSS for `side` styling of equation annotation
 
+### Usage
+
+To add equation annotations to a document:
+
+- write a HTML document with Latex math rendered using MathJax
+- label the equation(s) you want to annotate with the `\label{LABEL}` latex command
+- write a dl element with class `mathjax-code-annotation`
+    - style contained dd elements with a colon-separated list of labels `data-annotation-target-ids="LABEL1;LABEL2"`
+    - modify JS script to use `"bottom"` or `"side"` styles
+    - dd element inner HTML is used as is; or hidden
+    - dt element inner HTML is used as is, or as a descriptive tooltip
+
 ### Document lifecycle
 
 1. HTML is received by browser.

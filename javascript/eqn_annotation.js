@@ -6,7 +6,6 @@
  * This function filters the document
  * finds all "mjx-mrow.MathJax_ref"
  * removes the <a> element and the tabindex property.
- * 
 */
 function remove_ref_links() {
     for (const mrow_elem of document.querySelectorAll("mjx-mrow.MathJax_ref")) {
@@ -18,146 +17,6 @@ function remove_ref_links() {
         }
         const container = mrow_elem.parentElement.parentElement;
         container.removeAttribute("tabindex");
-    }
-}
-
-/* Analyze a single MathJax MathML block, from any of its DOM elements.
- * 
- * Given a single starting MathML DOM element, compute an analysis
- * of its components:
- * - Key DOM elements
- * - Number of lines
- * - Number of equations
-*/
-function analyze_mathjax_formatted_equation(dom_element) {
-    // Find the root
-    root = dom_element;
-    while (root.tagName != "MJX-CONTAINER") {
-        root = root.parentElement;
-    }
-    span_container = root.parentElement;
-
-    // From the root, identify other key elements
-    assistive_root = root.children[1];
-    content_root = root.children[0];
-
-    
-    // labelled equation or multiline unlabelled
-    if (content_root.children[0].tagName == "MJX-MTABLE") {
-        math_root = content_root.children[0].children[0];
-        
-        math_lines_container = math_root.children[0];
-        math_lines_elems = math_lines_container.children;
-        
-        // The number of math content lines in the document
-        num_lines = math_lines_elems.length;
-        
-        labels_root = content_root.querySelector("mjx-labels");
-
-        if (labels_root) {
-            labels_lines_container = labels_root.children[0];
-            labels_lines_elems = labels_lines_container.children;
-            
-            // The elements bearings the #IDs
-            anchors = labels_lines_container.querySelectorAll("mjx-mtd");
-            
-            ids = [];
-            for (elem of anchors) {
-                ids.push(elem.id);
-            }
-    
-            // The number of tags / equation numbers
-            num_eqn_tags = ids.length;
-    
-            // Array[Array[int]] mapping equation index to lines indices
-            // Assume that the final line of each eqn is labelled
-            // e.g. if we have 4 lines with:
-            // - eqn 1 on line 1
-            // - eqn 2 on line 2-3
-            // - eqn 3 on line 3
-            // eqn_to_line_map = [[0], [1, 2], [3]];
-            eqn_idx = 0;
-            eqn_to_line_map = [];
-            current_eqn = [];
-            for ([line_idx, line_elem] of Array.from(math_lines_elems).entries()) {
-                current_eqn.push(line_idx);
-                if (line_elem.tagName == "MJX-MLABELEDTR") {
-                    eqn_to_line_map.push(current_eqn);
-                    current_eqn = [];
-                    eqn_idx += 1;
-                }
-            }
-            // flush if the equation didn't finish with a labelled line
-            if (current_eqn.length > 0) {
-                eqn_to_line_map.push(current_eqn);
-            }
-            num_eqn = eqn_to_line_map.length;
-    
-            dom_elements = {
-                "span_container": span_container,
-                "root": root,
-                "assistive_root": assistive_root,
-                "content_root": content_root,
-                "math_root": math_root,
-                "math_lines_container": math_lines_container,
-                "math_lines_elems": math_lines_elems,
-                "labels_root": labels_root,
-                "labels_lines_container": labels_lines_container,
-                "labels_lines_elems": labels_lines_elems,
-                "anchors": anchors,
-                "eqn_to_line_map": eqn_to_line_map,
-            }
-        
-            info = {
-                "ids": ids,
-                "num_lines": num_lines,
-                "num_eqn_tags": num_eqn_tags,
-                "num_eqn": num_eqn,
-                "eqn_to_line_map": eqn_to_line_map,
-            }
-    
-            return {
-                "dom_elements": dom_elements,
-                "info": info,
-            }
-        }
-        dom_elements = {
-            "span_container": span_container,
-            "root": root,
-            "assistive_root": assistive_root,
-            "content_root": content_root,
-            "math_root": math_root,
-            "math_lines_container": math_lines_container,
-            "math_lines_elems": math_lines_elems,
-        }
-    
-        info = {
-            "num_lines": num_lines,
-            "num_eqn_tags": 0,
-        }
-
-        return {
-            "dom_elements": dom_elements,
-            "info": info,
-        }
-    };
-
-    // singe line unlabelled equation
-    dom_elements = {
-        "span_container": span_container,
-        "root": root,
-        "assistive_root": assistive_root,
-        "content_root": content_root,
-    }
-
-    info = {
-        "num_lines": 1,
-        "num_eqn_tags": 0,
-    }
-
-    return {
-        "dom_elements": dom_elements,
-        "info": info,
     }
 }
 
@@ -262,15 +121,14 @@ function compute_mjx_highlight_div(target_ids) {
 }
 
 
-/* Analyze equation annotations
+/* Render equation annotations encoded in a dl element
  * 
  * This function assumes that it is applied to dl element of class "mathjax-code-annotation"
  * dt elements should specify which equation IDs they apply to
  * with data-key `targettedIds` (targetted-ids in source HTML)
- * IDs are encoded as a `;` separated list
- * 
+ * IDs should be encoded as a `;` separated list
 */
-function analyze_eqn_annotation(dl_element, style="bottom") {
+function render_eqn_annotation(dl_element, style="bottom") {
     // Hide dl if in "side" mode
     if (style == "side") {
         dl_element.style.display = "none";
@@ -362,34 +220,13 @@ function analyze_eqn_annotation(dl_element, style="bottom") {
     }
 }
 
-/* Write a simple analysis report for a test document.
-*/
-function analysis_report() {
-    mathjax_roots = document.querySelectorAll("mjx-container");
-
-    console.log("Found mathjax roots: ", mathjax_roots.length);
-
-    for ([idx, elem] of mathjax_roots.entries()) {
-        root_elem = mathjax_roots[idx];
-        res = analyze_mathjax_formatted_equation(root_elem);
-
-        console.log("")
-        console.log("Analyzed root: ", idx);
-        console.log(res["info"]);
-        console.log(res["info"]["eqn_to_line_map"])
-        console.log(res["dom_elements"]["root"])
-    }
-
-    return res
-}
-
 window.addEventListener('DOMContentLoaded', (event) => {
 
     remove_ref_links();
 
     let style = "bottom";
     for (annotation_elem of document.querySelectorAll("dl.mathjax-code-annotation")) {
-        analyze_eqn_annotation(annotation_elem, style);
+        render_eqn_annotation(annotation_elem, style);
         style = "side";
     }
 
