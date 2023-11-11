@@ -1,0 +1,69 @@
+---
+format:
+  html:
+    include-in-header:
+      text: |
+        <script>
+        MathJax = {
+            tex: {
+                tags: 'ams'  // should be 'ams', 'none', or 'all'
+            }
+        };
+        </script>
+    include-after-body:
+      text: |
+        <script type="text/javascript" src="javascript/eqn_annotation.js"></script>
+---
+
+<!-- Numbered equation -->
+\begin{equation}
+1 = 1
+\end{equation}
+
+<!-- Unnumbered equation -->
+\begin{equation*}
+2 = 2
+\end{equation*}
+
+<!-- Tagged equation -->
+\begin{equation}
+3 = 3 \tag{tagabc}
+\end{equation}
+
+<!-- Labelled equation -->
+\begin{equation}
+4 = 4 \label{labelabc}
+\end{equation}
+
+A `\ref \eqref` example: \ref{labelabc} \eqref{labelabc}
+
+<!-- Numbered align -->
+\begin{align}
+5 &= 5 \\
+  &= 5
+\end{align}
+
+<!-- Unnumbered align -->
+\begin{align*}
+5 &= 5  \\
+  &= 5
+\end{align*}
+
+<!-- Align with tag and label -->
+\begin{align}
+5 &= 5 \tag{tagttt}      \\
+  &= 5 \label{labelttt}
+\end{align}
+
+<!-- Align with unnumbered lines -->
+\begin{align}
+5 &= 5  \\
+  &= 1  \nonumber \\
+  &+ 1  \nonumber \\
+  &+ 3  \\
+  &= 1 \nonumber \\
+  & + 1 \nonumber \\
+  & + 1 \nonumber \\
+  & + 1 \nonumber \\
+  & + 1
+\end{align}

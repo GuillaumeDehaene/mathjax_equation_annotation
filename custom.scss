@@ -1,0 +1,43 @@
+/*-- scss:rules --*/
+
+// Two rules for a highlighting div
+// Positionned via custom variables --top-ref and --height-ref
+// These should be adjusted to the elements that the div should cover
+div.mjx_eqn_highlight {
+    position: absolute;
+    // --top-ref: set programmatically
+    // --height-ref: set programamtically
+    top: calc(var(--top-ref) - 0.15em);
+    height: calc( var(--height-ref) + 0.15em);
+    width: 105%;
+    left: calc( var(--width) * 0.025 );
+    pointer-events: none;
+}
+
+div.mjx_eqn_highlight:is([data-status="active"], :target) {
+    border: solid rgba(170,170,170,.2666666667) 1.5px;
+    background-color: rgba(170,170,170,.1333333333);
+}
+
+// accessibility: make it obvious that elements are interactive and clickable
+.mathjax-code-annotation-trigger{
+    color: $link-color;
+    cursor: pointer;
+}
+
+// two rules to have the dl display as a two columns with a small margin
+dl.mathjax-code-annotation {
+    display: grid;
+    grid-template-columns: max-content auto;
+}
+
+dl.mathjax-code-annotation dd {
+    grid-column: 2;
+    margin-left: 5%;
+}
+
+// the default value font-weight 700 looked weird
+// next to non-bolded equation number
+dl.mathjax-code-annotation dt{
+    font-weight: normal;
+}

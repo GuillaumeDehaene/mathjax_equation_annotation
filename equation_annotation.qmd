@@ -1,0 +1,139 @@
+---
+format:
+  html:
+    theme:
+        - quarto
+        - custom.scss
+    include-in-header:
+      text: |
+        <script>
+        MathJax = {
+            tex: {
+                tags: 'ams',  // should be 'ams', 'none', or 'all'
+                tagformat: {
+                    number: (n) => n.toString(),
+                    tag:    (tag) => '(' + tag + ')',
+                    id:     (id) => 'mjx-eqn-' + id.replace(/\s/g, '_'),
+                    url:    (id, base) => base + '#' + encodeURIComponent(id),
+                },
+            }
+        };
+        </script>
+    include-after-body:
+      text: |
+        <script type="text/javascript" src="javascript/eqn_annotation.js"></script>
+---
+
+# Equation annotation proof of concept
+
+This document presents, in @sec-example, a proof-of-concept for MathJax equation annotation in HTML documents.
+The objective is to provide a way to co-locate, in long proofs, a math equation and a textual explanation of how it was derived from the equations preceding it.
+This feature is based upon the [code annotation feature of Quarto](https://quarto.org/docs/authoring/code-annotation.html).
+
+I'd be very happy to get feedback on this feature, particularly for the points discussed in @sec-questions. Please [send me an email](mailto: guillaume.dehaene+eqnAnnoation@gmail.com) or [discuss it on the quarto github](https://github.com/quarto-dev/quarto-cli/discussions/7413).
+
+Status of the project is written down in @sec-status. This is version 0.1 of this project. All features are subject to change before a stabilized version is released. The objective is to release this as:
+
+- a Quarto lua filter
+- standalone JS + CSS for HTML styling
+
+## Example {#sec-example}
+
+\begin{align}
+A &= \int B \label{eq-1} \\
+  &= \sum C \label{eq-2} \\
+  &= \frac{D}{2} \label{eq-3} \\
+  &= E \label{eq-4} \\
+  &= \int F \label{eq-5} \\
+  &= G \label{eq-6} \\
+  &= H \label{eq-7} \\
+\end{align}
+
+```{=html}
+<!-- <dl class="code-annotation-container-grid"> -->
+<dl class="mathjax-code-annotation">
+    <dt data-annotation-target-ids="eq-1;eq-2">
+        Eqs. \eqref{eq-1}-\eqref{eq-2}
+    </dt>
+    <dd>
+        Applying Ross’s happy trees theorem, one happy little accident at a time. Ever make mistakes in life? Let’s make them birds. Yeah, they’re birds now.
+    </dd>
+    <dt data-annotation-target-ids="eq-3;eq-4;eq-5">
+        Eqs. \eqref{eq-3}-\eqref{eq-5}
+    </dt>
+    <dd>
+        Expanding the integral and simplying terms together.
+    </dd>
+</dl>
+```
+
+\begin{align}
+A &= \int B \label{eq-11} \\
+  &= \sum C \label{eq-12} \\
+  &= \frac{D}{2} \label{eq-13} \\
+  &= E \label{eq-14} \\
+  &= \int F \label{eq-15} \\
+  &= G \label{eq-16} \\
+  &= H \label{eq-17} \\
+\end{align}
+
+```{=html}
+<!-- <dl class="code-annotation-container-grid"> -->
+<dl class="mathjax-code-annotation">
+    <dt data-annotation-target-ids="eq-11;eq-12">
+        Eqs. \eqref{eq-1}-\eqref{eq-2}
+    </dt>
+    <dd>
+        Applying Ross’s happy trees theorem, one happy little accident at a time. Ever make mistakes in life? Let’s make them birds. Yeah, they’re birds now.
+    </dd>
+    <dt data-annotation-target-ids="eq-13;eq-14;eq-15">
+        Eqs. \eqref{eq-3}-\eqref{eq-5}
+    </dt>
+    <dd>
+        Expanding the integral and simplying terms together.
+    </dd>
+</dl>
+```
+
+## Current status of the project {#sec-status}
+
+### Features
+
+- HTML + JS + CSS for `bottom` styling of equation annotation
+- HTML + JS + CSS for `side` styling of equation annotation
+
+### Document lifecycle
+
+1. HTML is received by browser.
+1. JS script modifies MathJax config.
+1. MathJax transforms raw math into MathMajx MathML.
+1. JS script runs:
+    1. Modifies MathJax renders of `\ref` and `\eqref`: remove links and tabindex.
+    1. Inserts a highlighting div inside of the MathJax render of annotated equations.
+    1. Adds a [tippy](https://atomiks.github.io/tippyjs/) event listener to trigger the annotation.
+
+### Open questions {#sec-questions}
+
+1. Improve UI/UX for standard user?
+    - currently, interactive elements are highlighted with `$link-color` and `cursor: pointer`
+1. Improve CSS: 
+    - make code highlight-styling use appropriate variables instead of static
+    - other?
+1. Improve accessibility? (aria attributes? Other?)
+    - for highlight?
+    - for interactive elements?
+    - make sure not to interfere with MathJax
+1. Is the DOM manipulation of the MathJax components ok?
+    - highlight div is integrated inside the MathJax MathML
+    - tippy is attached to highlight div
+1. Is integration of the DOM manipulation in the document life-cycle ok?
+    - functions trigger after MathJax is done transforming everything: that should be ok
+    - highlight div does not try to recompute its shape when the window is resized
+      in my tests, this works fine but could be an issue
+
+### Todolist
+
+- further integrate into quarto/pandoc markdown to HTML pipeline
+- fix markdown syntax for equation annotation
+- how to forward quarto/pandoc yaml options to JS script
+- proposal for latex styling (definition list as in HTML?)
