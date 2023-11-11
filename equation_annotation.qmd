@@ -6,21 +6,6 @@ format:
         - custom.scss
     include-in-header:
       text: |
-        <script>
-        MathJax = {
-            tex: {
-                tags: 'ams',  // should be 'ams', 'none', or 'all'
-                tagformat: {
-                    number: (n) => n.toString(),
-                    tag:    (tag) => '(' + tag + ')',
-                    id:     (id) => 'mjx-eqn-' + id.replace(/\s/g, '_'),
-                    url:    (id, base) => base + '#' + encodeURIComponent(id),
-                },
-            }
-        };
-        </script>
-    include-after-body:
-      text: |
         <script type="text/javascript" src="javascript/eqn_annotation.js"></script>
 ---
 
@@ -38,6 +23,8 @@ Status of the project is written down in @sec-status. This is version 0.1 of thi
 - standalone JS + CSS for HTML styling
 
 ## Example {#sec-example}
+
+Below we have an example of the `"side"` annotation style: hover, click or focus on equation number.
 
 \begin{align}
 A &= \int B \label{eq-1} \\
@@ -66,6 +53,8 @@ A &= \int B \label{eq-1} \\
     </dd>
 </dl>
 ```
+
+Below we have an example of the `"bottom"` annotation style: hover, click or focus on the blue text to highlight the corresponding equations.
 
 \begin{align}
 A &= \int B \label{eq-11} \\

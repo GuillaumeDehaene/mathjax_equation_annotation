@@ -220,14 +220,49 @@ function render_eqn_annotation(dl_element, style="bottom") {
     }
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
 
+// This function will trigger after MathJax is done rendering
+// We insert it in the MathJax lifecycle via the MathJax configuration object
+function after_mathjax_ready() {
     remove_ref_links();
+    
+    let style;
 
-    let style = "bottom";
+    // annotations pop-up on hovering equation numbers
+    style = "side";
+
+    // // annotations are a standard dd; hovering causes the highlight to appear
+    // style = "bottom"
+
     for (annotation_elem of document.querySelectorAll("dl.mathjax-code-annotation")) {
         render_eqn_annotation(annotation_elem, style);
-        style = "side";
+        
+        // Demo snippet: alternate between bottom and side styles
+        if (style == "bottom") {style = "side";}
+        else {style = "bottom";}
     }
+}
 
-})
+// MathJax configuration object
+window.MathJax = {
+    tex: {
+        // number all equations in ams latex environments
+        tags: 'ams',  // should be 'ams', 'none', or 'all'
+        // Modify how MathJax generates ids: replace the `mjx-eqn:LABEL` with `mjx-eqn-LABEL` 
+        tagformat: {
+            number: (n) => n.toString(),
+            tag:    (tag) => '(' + tag + ')',
+            id:     (id) => 'mjx-eqn-' + id.replace(/\s/g, '_'),
+            url:    (id, base) => base + '#' + encodeURIComponent(id),
+        },
+    },
+    startup: {
+        pageReady() {
+            return MathJax.startup.defaultPageReady().then(
+                function () {
+                    after_mathjax_ready();
+                }
+            );
+        }
+    }
+};
