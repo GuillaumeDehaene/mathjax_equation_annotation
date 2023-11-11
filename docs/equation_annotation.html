@@ -134,13 +134,13 @@ A &amp;= \int B \label{eq-11} \\
 <!-- <dl class="code-annotation-container-grid"> -->
 <dl class="mathjax-code-annotation">
     <dt data-annotation-target-ids="eq-11;eq-12">
-        Eqs. \eqref{eq-1}-\eqref{eq-2}
+        Eqs. \eqref{eq-11}-\eqref{eq-12}
     </dt>
     <dd>
         Applying Ross’s happy trees theorem, one happy little accident at a time. Ever make mistakes in life? Let’s make them birds. Yeah, they’re birds now.
     </dd>
     <dt data-annotation-target-ids="eq-13;eq-14;eq-15">
-        Eqs. \eqref{eq-3}-\eqref{eq-5}
+        Eqs. \eqref{eq-13}-\eqref{eq-15}
     </dt>
     <dd>
         Expanding the integral and simplying terms together.
@@ -203,15 +203,17 @@ A &amp;= \int B \label{eq-11} \\
 <li>for interactive elements?</li>
 <li>make sure not to interfere with MathJax</li>
 </ul></li>
+<li>Somehow, the integration in the MathJax lifecycle is not correct.
+<ul>
+<li>currently, I set the div after the MathJax pageReady hook</li>
+<li>surprisingly, the MathML exists but does not have the correct size</li>
+<li>the div is resized on show so it doesn’t matter</li>
+<li>contrary to quarto, I don’t resize the div when the window is resized in my tests, this works fine</li>
+</ul></li>
 <li>Is the DOM manipulation of the MathJax components ok?
 <ul>
 <li>highlight div is integrated inside the MathJax MathML</li>
 <li>tippy is attached to highlight div</li>
-</ul></li>
-<li>Is integration of the DOM manipulation in the document life-cycle ok?
-<ul>
-<li>functions trigger after MathJax is done transforming everything: that should be ok</li>
-<li>highlight div does not try to recompute its shape when the window is resized in my tests, this works fine but could be an issue</li>
 </ul></li>
 </ol>
 </section>

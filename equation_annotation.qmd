@@ -13,11 +13,12 @@ format:
 
 This document presents, in @sec-example, a proof-of-concept for MathJax equation annotation in HTML documents.
 The objective is to provide a way to co-locate, in long proofs, a math equation and a textual explanation of how it was derived from the equations preceding it.
+[The source code is here](https://github.com/GuillaumeDehaene/mathjax_equation_annotation).
 This feature is based upon the [code annotation feature of Quarto](https://quarto.org/docs/authoring/code-annotation.html).
 
 I'd be very happy to get feedback on this feature, particularly for the points discussed in @sec-questions. Please [send me an email](mailto: guillaume.dehaene+eqnAnnoation@gmail.com) or [discuss it on the quarto github](https://github.com/quarto-dev/quarto-cli/discussions/7413).
 
-Status of the project is written down in @sec-status. This is version 0.1 of this project. All features are subject to change before a stabilized version is released. The objective is to release this as:
+Status of the project described in @sec-status. This is version 0.1 of this project. All features are subject to change before a stabilized version is released. The objective is to release this as:
 
 - a Quarto lua filter
 - standalone JS + CSS for HTML styling
@@ -70,13 +71,13 @@ A &= \int B \label{eq-11} \\
 <!-- <dl class="code-annotation-container-grid"> -->
 <dl class="mathjax-code-annotation">
     <dt data-annotation-target-ids="eq-11;eq-12">
-        Eqs. \eqref{eq-1}-\eqref{eq-2}
+        Eqs. \eqref{eq-11}-\eqref{eq-12}
     </dt>
     <dd>
         Applying Ross’s happy trees theorem, one happy little accident at a time. Ever make mistakes in life? Let’s make them birds. Yeah, they’re birds now.
     </dd>
     <dt data-annotation-target-ids="eq-13;eq-14;eq-15">
-        Eqs. \eqref{eq-3}-\eqref{eq-5}
+        Eqs. \eqref{eq-13}-\eqref{eq-15}
     </dt>
     <dd>
         Expanding the integral and simplying terms together.
@@ -124,13 +125,15 @@ To add equation annotations to a document:
     - for highlight?
     - for interactive elements?
     - make sure not to interfere with MathJax
+1. Somehow, the integration in the MathJax lifecycle is not correct.
+    - currently, I set the div after the MathJax pageReady hook
+    - surprisingly, the MathML exists but does not have the correct size
+    - the div is resized on show so it doesn't matter
+    - contrary to quarto, I don't resize the div when the window is resized
+      in my tests, this works fine
 1. Is the DOM manipulation of the MathJax components ok?
     - highlight div is integrated inside the MathJax MathML
     - tippy is attached to highlight div
-1. Is integration of the DOM manipulation in the document life-cycle ok?
-    - functions trigger after MathJax is done transforming everything: that should be ok
-    - highlight div does not try to recompute its shape when the window is resized
-      in my tests, this works fine but could be an issue
 
 ### Todolist
 

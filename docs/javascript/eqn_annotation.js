@@ -42,7 +42,7 @@ function compute_mjx_highlight_div(target_ids) {
     }
 
     // Find the root
-    var root = document.querySelector(`#${target_ids[0].replace("%3A", "\\:")}`);
+    let root = document.querySelector(`#${target_ids[0].replace("%3A", "\\:")}`);
     if (root === null) {
         throw new Error(`Failed to find ID: ${target_ids[0]}`)
     }
@@ -68,9 +68,9 @@ function compute_mjx_highlight_div(target_ids) {
     // - eqn 2 on line 2-3
     // - eqn 3 on line 3
     // eqn_to_line_map = [[0], [1, 2], [3]];
-    var eqn_idx = 0;
+    let eqn_idx = 0;
     const eqn_to_line_map = [];
-    var current_eqn = [];
+    let current_eqn = [];
     let line_idx, line_elem;
     for ([line_idx, line_elem] of Array.from(math_lines_elems).entries()) {
         current_eqn.push(line_idx);
@@ -95,15 +95,15 @@ function compute_mjx_highlight_div(target_ids) {
         line_indices = line_indices.concat(eqn_to_line_map[target_id_index]);
     }
 
-    div = document.createElement("div");
+    const div = document.createElement("div");
     div.id = div_id;
     div.classList.add("mjx_eqn_highlight");
     root.appendChild(div);
 
-    let adjust_top_bottom = function() {
-        var top = Infinity;
-        var bottom = -Infinity;
-        for (line_idx of line_indices) {
+    const adjust_top_bottom = function() {
+        let top = Infinity;
+        let bottom = -Infinity;
+        for (const line_idx of line_indices) {
             line_elem = math_lines_elems[line_idx];
             top = Math.min(top, line_elem.offsetTop);
             bottom = Math.max(bottom, line_elem.offsetTop + line_elem.offsetHeight);
@@ -135,7 +135,6 @@ function render_eqn_annotation(dl_element, style="bottom") {
     }
 
     for (const dt_elem of dl_element.querySelectorAll("dt")) {
-        console.log(dt_elem);
         const raw_ids = dt_elem.dataset.annotationTargetIds.split(";");
         const ids = [];
         for (const id of raw_ids) {
@@ -154,7 +153,6 @@ function render_eqn_annotation(dl_element, style="bottom") {
             for (id of ids) {
                 trigger_target.push(document.querySelector(`#${id}`));
             }
-            console.log(dt_elem.nextElementSibling);
             content = dt_elem.nextElementSibling.innerHTML;
             attach_to = div;
         }
@@ -163,7 +161,6 @@ function render_eqn_annotation(dl_element, style="bottom") {
             trigger_elem.classList.add("mathjax-code-annotation-trigger");
             trigger_elem.setAttribute("tabindex", "0");
         }
-        console.log(trigger_target);
 
         const config = {
             allowHTML: true,
