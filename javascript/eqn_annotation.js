@@ -195,7 +195,7 @@ function render_eqn_annotation(dl_element, style="bottom") {
                 options: {
                   flipVariations: false, // true by default
                   allowedAutoPlacements: ['right'],
-                  fallbackPlacements: ['right', 'top-end', 'top-start', 'top'],
+                  fallbackPlacements: ['right', 'top-end', 'bottom-end', 'top', 'bottom', 'left', 'top-start', 'bottom-start'],
                 },
               },
               {

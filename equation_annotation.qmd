@@ -7,6 +7,7 @@ format:
     include-in-header:
       text: |
         <script type="text/javascript" src="javascript/eqn_annotation.js"></script>
+    email-obfuscation: javascript
 ---
 
 # Equation annotation proof of concept
@@ -16,7 +17,7 @@ The objective is to provide a way to co-locate, in long proofs, a math equation 
 [The source code is here](https://github.com/GuillaumeDehaene/mathjax_equation_annotation).
 This feature is based upon the [code annotation feature of Quarto](https://quarto.org/docs/authoring/code-annotation.html).
 
-I'd be very happy to get feedback on this feature, particularly for the points discussed in @sec-questions. Please [send me an email](mailto: guillaume.dehaene+eqnAnnoation@gmail.com) or [discuss it on the quarto github](https://github.com/quarto-dev/quarto-cli/discussions/7413).
+I'd be very happy to get feedback on this feature, particularly for the points discussed in @sec-questions. Please [send me an email](mailto:guillaume.dehaene+eqnAnnoation@gmail.com) or [discuss it on the quarto github](https://github.com/quarto-dev/quarto-cli/discussions/7413).
 
 Status of the project described in @sec-status. This is version 0.1 of this project. All features are subject to change before a stabilized version is released. The objective is to release this as:
 
